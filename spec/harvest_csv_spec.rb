@@ -1,3 +1,4 @@
+require 'spec_helper'
 require_relative '../lib/harvest_csv'
 
 describe "Solr conversion" do
@@ -10,7 +11,7 @@ describe "Solr conversion" do
                          "field1_display" => "value1",
                          "field2_facet" => "value2",
                          "field2_display" => "value2"}
-    actual_document = csv_to_solr(csv_hash, schema_map)
+    actual_document = HarvestCSV.csv_to_solr(csv_hash, schema_map)
     expect(actual_document).to match expected_document
   end
 
@@ -21,9 +22,8 @@ describe "To Solr core" do
     solr_uri = 'http://localhost:8983/solr/blacklight-core'
     solr = RSolr.connect url: solr_uri
     csv_string = "key1,key2\nvalue1,value2"
-    schema_map = {"key1" => ["id", "key1_display"],
-                  "key2" => ["key2_facet", "key2_display"]}
-    csv_filename = "fixtures/test.csv"
-    harvest_csv(csv_filename, schema_map, solr_uri)
+    csv_filename = "#{RSpec.configuration.fixtures_path}/test.csv"
+    map_filename = "#{RSpec.configuration.fixtures_path}/test-map.yml"
+    HarvestCSV.harvest(csv_filename, map_filename, solr_uri)
   end
 end

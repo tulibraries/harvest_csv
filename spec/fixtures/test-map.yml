@@ -1,0 +1,8 @@
+---
+field1:
+  - id
+  - field1_display
+  - title_display
+field2:
+  - field2_facet
+  - field2_display
