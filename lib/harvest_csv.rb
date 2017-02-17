@@ -4,14 +4,16 @@ require 'rsolr'
 require 'pry'
 require 'yaml'
 require 'securerandom'
+require 'active_support/core_ext/string'
 
 module HarvestCSV
   def self.csv_to_solr(csv_hash, schema_map)
     document = Hash.new
     document["id"] = SecureRandom.uuid
     csv_hash.each { |key, value|
-      if (schema_map.has_key?(key))
-        solr_fields = schema_map[key]
+      k = key.parameterize.underscore
+      if (schema_map.has_key?(k))
+        solr_fields = schema_map[k]
         solr_fields.each {|solr_field|
           document[solr_field] = value
         }
@@ -29,9 +31,9 @@ module HarvestCSV
       csv.each do |row|
         document = csv_to_solr(row.to_h, schema_map)
         solr.add(document)
+        solr.commit
       end
     end
-    solr.commit
   end
 
   def self.make_map(csv_source,
@@ -40,7 +42,8 @@ module HarvestCSV
     CSV.open(csv_source, headers: true) do |csv|
       csv.first
       csv.headers.each do |field_name|
-        schema_map[field_name] = ["#{field_name.downcase}_display"]
+        field = a.parameterize.underscore
+        schema_map[field] = ["#{field.downcase}_display"]
       end
     end
     YAML.dump(schema_map, File.new(map_file, 'w'))
@@ -51,8 +54,8 @@ module HarvestCSV
     schema_map.values.flatten.select { |a|
       if a.end_with?(field_match)
         partial_fields << {
-          field: a,
-          label: a.sub(/_#{field_match}$/,'').capitalize
+          field: a.parameterize,
+          label: a.sub(/_#{field_match}$/,'').titleize
         } 
       end
     }

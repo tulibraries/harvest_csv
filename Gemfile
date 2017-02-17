@@ -7,3 +7,4 @@ gem 'pry', platform: :mri
 gem 'rsolr', '~> 1.0'
 gem 'rspec'
 gem 'ruby-progressbar'
+gem 'activesupport'
