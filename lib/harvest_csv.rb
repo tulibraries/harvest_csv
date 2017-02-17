@@ -42,7 +42,7 @@ module HarvestCSV
     CSV.open(csv_source, headers: true) do |csv|
       csv.first
       csv.headers.each do |field_name|
-        field = a.parameterize.underscore
+        field = field_name.parameterize.underscore
         schema_map[field] = ["#{field.downcase}_display"]
       end
     end
