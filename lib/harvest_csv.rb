@@ -21,7 +21,7 @@ module HarvestCSV
   end
 
   def self.harvest(csv_source,
-                   map_source = './solr_map.yml',
+                   map_source = 'solr_map.yml',
                    solr_endpoint = 'http://localhost:8983/solr/blacklight-core' )
     schema_map = YAML.load_file(map_source)
     solr = RSolr.connect url: solr_endpoint
@@ -32,5 +32,17 @@ module HarvestCSV
       end
     end
     solr.commit
+  end
+
+  def self.make_map(csv_source,
+                    map_file = 'solr_map.yml')
+    schema_map = Hash.new
+    CSV.open(csv_source, headers: true) do |csv|
+      csv.first
+      csv.headers.each do |field_name|
+        schema_map[field_name] = ["#{field_name.downcase}_display"]
+      end
+    end
+    YAML.dump(schema_map, File.new(map_file, 'w'))
   end
 end
