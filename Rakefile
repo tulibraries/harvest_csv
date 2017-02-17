@@ -9,9 +9,16 @@ task :ingest do
   end
 end
 
-desc "Create a Solr mapping file from a CSV file header"
+desc "create a solr mapping file from a csv file header"
 task :makemap do
   Rake::FileList.new("*.csv") do |fl|
     HarvestCSV.make_map(fl.first)
+  end
+end
+
+desc "create Blacklight catalog partials from solr mapping file"
+task :blacklight do
+  Rake::FileList.new("*_map.yml") do |fl|
+    HarvestCSV.blacklight(fl.first)
   end
 end

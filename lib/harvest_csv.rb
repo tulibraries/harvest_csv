@@ -45,4 +45,32 @@ module HarvestCSV
     end
     YAML.dump(schema_map, File.new(map_file, 'w'))
   end
+
+  def self.get_blacklight_add_fields(schema_map, field_match)
+    partial_fields = []
+    schema_map.values.flatten.select { |a|
+      if a.end_with?(field_match)
+        partial_fields << {
+          field: a,
+          label: a.sub(/_#{field_match}$/,'').capitalize
+        } 
+      end
+    }
+    partial_fields
+  end
+
+  def self.blacklight(map_source = 'solr_map.yml')
+    schema_map = YAML.load_file(map_source)
+    partial_file = File.new("_blacklight_config.rb", 'w')
+    line = ""
+    get_blacklight_add_fields(schema_map, "facet").each do |f|
+      line << sprintf("    config.add_facet_field '%s', label: '%s'\n",
+                      f[:field], f[:label])
+    end
+    get_blacklight_add_fields(schema_map, "display").each do |f|
+      line << sprintf("    config.add_show_field '%s', label: '%s'\n",
+                      f[:field], f[:label])
+    end
+    partial_file.write line
+  end
 end
