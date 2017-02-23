@@ -48,17 +48,20 @@ module HarvestCSV
     end
   end
 
-  def self.make_map(csv_source,
-                    map_file = 'solr_map.yml')
+  def self.make_map(csv_path,
+                    map_file,
+                    id_field)
     schema_map = Hash.new
-    CSV.open(csv_source, headers: true) do |csv|
+    CSV.open(csv_path, headers: true) do |csv|
       csv.first
       csv.headers.each do |field_name|
         field = field_name.parameterize.underscore
-        schema_map[field] = ["#{field.downcase}_display"]
+        schema_map[field] = []
+        schema_map[field] << "id" if id_field == field_name
+        schema_map[field] << "#{field.downcase}_display"
       end
     end
-    YAML.dump(schema_map, File.new(map_file, 'w'))
+    YAML.dump(schema_map, map_file)
   end
 
   def self.get_blacklight_add_fields(schema_map, field_match)
