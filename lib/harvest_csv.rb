@@ -49,7 +49,7 @@ module HarvestCSV
   end
 
   def self.make_map(csv_path,
-                    map_file,
+                    map_path,
                     id_field)
     schema_map = Hash.new
     CSV.open(csv_path, headers: true) do |csv|
@@ -57,11 +57,14 @@ module HarvestCSV
       csv.headers.each do |field_name|
         field = field_name.parameterize.underscore
         schema_map[field] = []
-        schema_map[field] << "id" if id_field == field_name
+        schema_map[field] << "id" if id_field == field_name.to_s
         schema_map[field] << "#{field.downcase}_display"
+        schema_map[field] << "#{field.downcase}_facet"
       end
     end
+    map_file = File.new(map_path, 'w')
     YAML.dump(schema_map, map_file)
+    map_file.close
   end
 
   def self.get_blacklight_add_fields(schema_map, field_match)
