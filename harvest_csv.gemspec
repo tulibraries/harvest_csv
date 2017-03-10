@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'harvest_csv'
-  s.version = '0.0.2'
+  s.version = '0.0.3'
   s.authors = ["Steven Ng"]
   s.date = %q{2014-02-22}
   s.description = "HarvestCSV - Ingests CSV files into Solr"
