@@ -29,7 +29,16 @@ module HarvestCSV
     schema_map = YAML.load_file(map_source)
     batch_size = 100
     batch_thread = []
-    csv = CSV.read(csv_source, headers: true)
+
+    # Use compatible encoding
+    csv_encoding = `file -b --mime-encoding #{csv_source}`.rstrip
+
+    if (csv_encoding == "us-ascii")
+      csv = CSV.read(csv_source, headers: true, encoding: 'ISO8859-1') 
+    else
+      csv = CSV.read(csv_source, headers: true) 
+    end
+
     puts "Harvesting #{csv_source}"
     progressbar = ProgressBar.create(:title => "Harvest ", :total => 1 + (csv.count / batch_size), format: "%t (%c/%C) %a |%B|")
     solr = RSolr.connect url: solr_endpoint
