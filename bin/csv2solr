@@ -1,0 +1,33 @@
+#! /usr/bin/env ruby
+# vim ft=ruby
+
+require "thor"
+require_relative '../lib/harvest_csv'
+
+class CSV2Solr < Thor
+  desc "import CSV", "Import single CSV file to running Solr endpoint"
+  def import(csvfile)
+    HarvestLibguides.import(csvfile)
+  end
+
+  desc "harvest URL", "Harvests LibGuides documents from LibGuides installation running Solr endpoint"
+  def harvest(csvfile_directory)
+    HarvestLibguides.harvest(csvfile_directory)
+  end
+
+  desc "makemap", "Create a solr mapping file from a csv file header"
+  def makemap(csvfile)
+    map_file = File.open("solr_map.yml", "w")
+    id_field = args.has_key?(:id_field) ? args[:id_field] : 'ID'
+    Rake::FileList.new("*.csv") do |fl|
+      HarvestCSV.make_map(fl.first, map_file, id_field)
+    end
+  end
+
+  desc "makefields", "Create Blacklight catalog partials from solr mapping file"
+  def makefields(mapfile)
+    HarvestCSV.blacklight(mapfile)
+  end
+end
+
+CSV2Solr.start(ARGV)
