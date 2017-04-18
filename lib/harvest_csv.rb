@@ -25,9 +25,9 @@ module HarvestCSV
 
   def self.harvest(csv_source,
                    map_source = 'solr_map.yml',
-                   solr_endpoint = 'http://localhost:8983/solr/blacklight-core' )
+                   solr_endpoint = 'http://localhost:8983/solr/blacklight-core',
+                   batch_size = 100)
     schema_map = YAML.load_file(map_source)
-    batch_size = 100
     batch_thread = []
 
     # Use compatible encoding
@@ -39,21 +39,21 @@ module HarvestCSV
       csv = CSV.read(csv_source, headers: true) 
     end
 
-    puts "Harvesting #{csv_source}"
-    progressbar = ProgressBar.create(:title => "Harvest ", :total => 1 + (csv.count / batch_size), format: "%t (%c/%C) %a |%B|")
+    progressbar = ProgressBar.create(:title => "Harvest ", :total => csv.count, format: "%t (%c/%C) %a |%B|")
     solr = RSolr.connect url: solr_endpoint
     csv.each_slice(batch_size) do |batch|
       batch_thread << Thread.new {
         document_batch = []
         batch.each do |item|
           document_batch << ( csv_to_solr(item.to_h, schema_map) )
+          progressbar.increment
         end
         solr.add document_batch, add_attributes: { commitWithin: 10 }
-        progressbar.increment
       }
 
       solr.commit
 
+      batch_thread.each { |t| t.join }
     end
   end
 
