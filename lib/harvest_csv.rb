@@ -1,7 +1,6 @@
 require 'rubygems'
 require 'csv'
 require 'rsolr'
-require 'pry'
 require 'yaml'
 require 'securerandom'
 require 'active_support/core_ext/string'
