@@ -88,9 +88,9 @@ module HarvestCSV
     partial_fields
   end
 
-  def self.blacklight(map_source = 'solr_map.yml')
+  def self.blacklight(map_source = 'solr_map.yml', partial_output = '_blacklight_config.rb')
     schema_map = YAML.load_file(map_source)
-    partial_file = File.new("_blacklight_config.rb", 'w')
+    partial_file = File.new(partial_output, 'w')
     line = ""
     get_blacklight_add_fields(schema_map, "facet").each do |f|
       line << sprintf("    config.add_facet_field '%s', label: '%s'\n",

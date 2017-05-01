@@ -7,6 +7,7 @@ gem 'rspec'
 gem 'ruby-progressbar'
 gem 'activesupport'
 gem 'rack-utf8_sanitizer'
+gem 'thor'
 #group :development, :test do
 #  gem 'byebug', platform: :mri
 #  gem 'pry', platform: :mri, group:development
