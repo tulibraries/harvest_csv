@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-gem 'rsolr', '~> 1.0'
+gem 'rsolr', '> 1.0.6','<3'
 gem 'rspec'
 gem 'ruby-progressbar'
 gem 'activesupport'
