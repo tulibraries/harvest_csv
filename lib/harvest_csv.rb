@@ -23,7 +23,7 @@ module HarvestCSV
   end
 
   def self.sanitize(value)
-    value.gsub!(/\u0018/, '') if value.class == String
+    value.gsub!(/[^[:print:]]/, '') if value.class == String
 
     value
   end
