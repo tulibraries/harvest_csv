@@ -15,11 +15,17 @@ module HarvestCSV
       if (schema_map.has_key?(k))
         solr_fields = schema_map[k]
         solr_fields.each {|solr_field|
-          document[solr_field] = value
+          document[solr_field] = sanitize(value)
         }
       end
     }
     document
+  end
+
+  def self.sanitize(value)
+    value.gsub!(/\u0018/, '') if value.class == String
+
+    value
   end
 
   def self.harvest(csv_source,
