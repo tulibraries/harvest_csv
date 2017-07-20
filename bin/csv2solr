@@ -14,7 +14,7 @@ class CSV2Solr < Thor
     desc: 'Solr endpoint',
     banner: 'url'
   def harvest(csv_file)
-    HarvestCSV.harvest(csv_file, mapfile)
+    HarvestCSV.harvest(csv_file, options[:mapfile], options[:solr_url])
   end
 
   desc "makemap CSV_file", "Create a solr mapping file from a CSV file with header."
@@ -38,7 +38,7 @@ class CSV2Solr < Thor
     desc: 'output blacklight catalog controller snippet file',
     banner: 'file'
   def blconfig(mapfile='solr_map.yml')
-    HarvestCSV.blacklight(mapfile)
+    HarvestCSV.blacklight(mapfile, options[:output])
   end
 end
 
