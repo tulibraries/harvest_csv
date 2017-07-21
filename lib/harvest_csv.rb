@@ -31,7 +31,8 @@ module HarvestCSV
   def self.harvest(csv_source,
                    map_source = 'solr_map.yml',
                    solr_endpoint = 'http://localhost:8983/solr/blacklight-core',
-                   batch_size = 100)
+                   batch_size = 1)
+    puts "Batch size = #{batch_size}"
     schema_map = YAML.load_file(map_source)
     batch_thread = []
 
@@ -39,7 +40,7 @@ module HarvestCSV
     csv_encoding = `file -b --mime-encoding #{csv_source}`.rstrip
 
     if (csv_encoding == "us-ascii")
-      csv = CSV.read(csv_source, headers: true, encoding: 'ISO8859-1') 
+      csv = CSV.read(csv_source, headers: true, encoding: 'utf-8') 
     else
       csv = CSV.read(csv_source, headers: true) 
     end
