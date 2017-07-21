@@ -22,7 +22,7 @@ module HarvestCSV
     document["id"].prepend("#{document['year_display']}-")
     document
   end
-end
+
   def self.sanitize(value)
     value.gsub!(/[^[:print:]]/, '') if value.class == String
 
