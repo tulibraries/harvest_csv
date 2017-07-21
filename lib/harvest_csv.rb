@@ -9,19 +9,20 @@ require 'ruby-progressbar'
 module HarvestCSV
   def self.csv_to_solr(csv_hash, schema_map)
     document = Hash.new
-    document["id"] = SecureRandom.uuid
     csv_hash.each { |key, value|
       k = key.parameterize.underscore
       if (schema_map.has_key?(k))
         solr_fields = schema_map[k]
         solr_fields.each {|solr_field|
-          document[solr_field] = sanitize(value)
+          document[solr_field] = value
         }
       end
     }
+    document["id"] = document['original_order_display'] if document["id"].nil?
+    document["id"].prepend("#{document['year_display']}-")
     document
   end
-
+end
   def self.sanitize(value)
     value.gsub!(/[^[:print:]]/, '') if value.class == String
 
@@ -31,7 +32,7 @@ module HarvestCSV
   def self.harvest(csv_source,
                    map_source = 'solr_map.yml',
                    solr_endpoint = 'http://localhost:8983/solr/blacklight-core',
-                   batch_size = 1)
+                   batch_size = 100)
     puts "Batch size = #{batch_size}"
     schema_map = YAML.load_file(map_source)
     batch_thread = []
@@ -39,11 +40,7 @@ module HarvestCSV
     # Use compatible encoding
     csv_encoding = `file -b --mime-encoding #{csv_source}`.rstrip
 
-    if (csv_encoding == "us-ascii")
-      csv = CSV.read(csv_source, headers: true, encoding: 'utf-8') 
-    else
-      csv = CSV.read(csv_source, headers: true) 
-    end
+    csv = CSV.read(csv_source, headers: true, encoding: 'utf-8') 
 
     progressbar = ProgressBar.create(:title => "Harvest ", :total => csv.count, format: "%t (%c/%C) %a |%B|")
     solr = RSolr.connect url: solr_endpoint
