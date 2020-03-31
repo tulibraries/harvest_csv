@@ -41,10 +41,10 @@ PLATFORMS
 DEPENDENCIES
   activesupport
   rack-utf8_sanitizer
-  rsolr (~> 1.0)
+  rsolr (>= 1.0, < 3)
   rspec
   ruby-progressbar
   thor
 
 BUNDLED WITH
-   1.14.6
+   2.1.4

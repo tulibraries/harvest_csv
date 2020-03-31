@@ -5,6 +5,7 @@ require 'yaml'
 require 'securerandom'
 require 'active_support/core_ext/string'
 require 'ruby-progressbar'
+require 'uri'
 
 module HarvestCSV
   def self.csv_to_solr(csv_hash, schema_map)
@@ -18,8 +19,13 @@ module HarvestCSV
         }
       end
     }
+
+    # Gencon50 ID generation
     document["id"] = document['original_order_display'] if document["id"].nil?
     document["id"].prepend("#{document['year_display']}-")
+    document["id"].gsub!(",", "")
+    document["id"].gsub!("#", "")
+
     document
   end
 
