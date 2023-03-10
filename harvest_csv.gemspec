@@ -19,5 +19,5 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'rsolr', '~> 1.0'
   s.add_runtime_dependency 'ruby-progressbar', '~> 1.8' 
-  s.add_runtime_dependency 'activesupport', '>= 5', '< 7'
+  s.add_runtime_dependency 'activesupport', '>= 5', '< 8'
 end
