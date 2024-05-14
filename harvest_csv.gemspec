@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.homepage = 'https://github.com/tulibraries/harvest_csv'
 
-  s.add_runtime_dependency 'rsolr', '~> 1.0'
+  s.add_runtime_dependency 'rsolr', '~> 2.5'
   s.add_runtime_dependency 'ruby-progressbar', '~> 1.8' 
   s.add_runtime_dependency 'activesupport', '>= 5', '< 8'
 end
