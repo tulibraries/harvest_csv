@@ -22,7 +22,7 @@ GEM
       concurrent-ruby (~> 1.0)
     minitest (5.22.2)
     mutex_m (0.2.0)
-    rack (3.0.16)
+    rack (3.1.18)
     rack-utf8_sanitizer (1.9.1)
       rack (>= 1.0, < 4.0)
     rsolr (1.1.2)
