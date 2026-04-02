@@ -25,7 +25,7 @@ GEM
       concurrent-ruby (~> 1.0)
     logger (1.7.0)
     minitest (5.27.0)
-    rack (3.1.20)
+    rack (3.1.21)
     rack-utf8_sanitizer (1.9.1)
       rack (>= 1.0, < 4.0)
     rsolr (1.1.2)
