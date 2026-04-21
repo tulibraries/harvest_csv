@@ -16,8 +16,10 @@ Gem::Specification.new do |s|
   s.test_files = `git ls-files -- spec/*`.split("\n")
   s.require_paths = ['lib']
   s.homepage = 'https://github.com/tulibraries/harvest_csv'
+  s.required_ruby_version = '>= 3.2', '< 3.5'
 
   s.add_runtime_dependency 'rsolr', '~> 2.5'
-  s.add_runtime_dependency 'ruby-progressbar', '~> 1.8' 
-  s.add_runtime_dependency 'activesupport', '>= 5', '< 9'
+  s.add_runtime_dependency 'ruby-progressbar', '>= 1.10', '< 2'
+  s.add_runtime_dependency 'activesupport', '>= 6.1', '< 8.2'
+  s.add_runtime_dependency 'thor', '>= 1.3', '< 2'
 end

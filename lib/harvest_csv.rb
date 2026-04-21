@@ -5,8 +5,15 @@ require 'yaml'
 require 'securerandom'
 require 'active_support/core_ext/string'
 require 'ruby-progressbar'
+require_relative 'version'
 
 module HarvestCSV
+  def self.load_schema_map(map_source)
+    YAML.safe_load_file(map_source, permitted_classes: [], permitted_symbols: [], aliases: false)
+  rescue NoMethodError
+    YAML.safe_load(File.read(map_source), permitted_classes: [], permitted_symbols: [], aliases: false)
+  end
+
   def self.csv_to_solr(csv_hash, schema_map)
     document = Hash.new
     document["id"] = SecureRandom.uuid
@@ -33,7 +40,7 @@ module HarvestCSV
                    solr_endpoint = 'http://localhost:8983/solr/blacklight-core',
                    batch_size = 1)
     puts "Batch size = #{batch_size}"
-    schema_map = YAML.load_file(map_source)
+    schema_map = load_schema_map(map_source)
     batch_thread = []
 
     # Use compatible encoding
@@ -67,19 +74,22 @@ module HarvestCSV
                     map_path,
                     id_field)
     schema_map = Hash.new
+    normalized_id_field = id_field.to_s.parameterize.underscore
     CSV.open(csv_path, headers: true) do |csv|
       csv.first
       csv.headers.each do |field_name|
         field = field_name.parameterize.underscore
         schema_map[field] = []
-        schema_map[field] << "id" if id_field == field_name.to_s
+        schema_map[field] << "id" if normalized_id_field == field
         schema_map[field] << "#{field.downcase}_display"
         schema_map[field] << "#{field.downcase}_facet"
       end
     end
-    map_file = File.new(map_path, 'w')
-    YAML.dump(schema_map, map_file)
-    map_file.close
+    if map_path.respond_to?(:write)
+      YAML.dump(schema_map, map_path)
+    else
+      File.open(map_path, 'w') { |map_file| YAML.dump(schema_map, map_file) }
+    end
   end
 
   def self.get_blacklight_add_fields(schema_map, field_match)
@@ -96,7 +106,7 @@ module HarvestCSV
   end
 
   def self.blacklight(map_source = 'solr_map.yml', partial_output = '_blacklight_config.rb')
-    schema_map = YAML.load_file(map_source)
+    schema_map = load_schema_map(map_source)
     partial_file = File.new(partial_output, 'w')
     line = ""
     get_blacklight_add_fields(schema_map, "facet").each do |f|
