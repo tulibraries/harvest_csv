@@ -23,8 +23,11 @@ module HarvestCSV
       k = key.parameterize.underscore
       if (schema_map.has_key?(k))
         solr_fields = schema_map[k]
+        sanitized_value = sanitize(value)
+        next if sanitized_value.nil?
+
         solr_fields.each { |solr_field|
-          document[solr_field] = sanitize(value)
+          document[solr_field] = sanitized_value
         }
       end
     }

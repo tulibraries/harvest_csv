@@ -19,6 +19,24 @@ describe "Solr conversion" do
     expect(actual_document).to match expected_document
   end
 
+  it "omits mapped fields when the csv value is nil" do
+    schema_map = {
+      "title" => ["title_display", "title_facet"],
+      "notes" => ["notes_display"]
+    }
+    csv_hash = {
+      "title" => "Example",
+      "notes" => nil
+    }
+
+    actual_document = HarvestCSV.csv_to_solr(csv_hash, schema_map)
+
+    expect(actual_document).to include(
+      "title_display" => "Example",
+      "title_facet" => "Example"
+    )
+    expect(actual_document).not_to have_key("notes_display")
+  end
 end
 
 describe "To Solr core" do
