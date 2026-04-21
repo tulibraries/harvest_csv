@@ -29,8 +29,6 @@ describe "To Solr core" do
       skip "Solr is not available on localhost:8983"
     end
 
-    solr = RSolr.connect url: solr_uri
-    csv_string = "key1,key2\nvalue1,value2"
     csv_filename = "#{RSpec.configuration.fixtures_path}/test.csv"
     map_filename = "#{RSpec.configuration.fixtures_path}/test-map.yml"
     HarvestCSV.harvest(csv_filename, map_filename, solr_uri)

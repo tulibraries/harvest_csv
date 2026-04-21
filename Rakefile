@@ -9,7 +9,7 @@ namespace :blimp do
   end
 
   desc "Create a solr mapping file from a csv file header"
-  task :makemap, [:id_field] do |t, args|
+  task :makemap, [:id_field] do |_t, args|
     map_file = File.open("solr_map.yml", "w")
     id_field = args.has_key?(:id_field) ? args[:id_field] : 'ID'
     Rake::FileList.new("*.csv") do |fl|
